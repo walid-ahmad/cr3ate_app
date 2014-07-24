@@ -9,4 +9,19 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Cr3ateApp::Application.config.secret_key_base = '0ba75ce34be1c4b1b905c865853c2658c6b58c1e16e6c1d7f6b5bdf0c0de688e0901012e7822307dea1d477d4c4a7721b69b17775c07bef6dfa413b31392308d'
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+
+Cr3ateApp::Application.config.secret_key_base = secure_token
